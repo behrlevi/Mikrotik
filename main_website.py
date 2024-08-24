@@ -4,7 +4,6 @@ import custom_api as ca
 class MyWebApp(object):
     @cherrypy.expose
     def index(self):
-        # HTML content with a button
         return """
         <!DOCTYPE html>
         <html>
@@ -12,29 +11,35 @@ class MyWebApp(object):
             <title>Execute Function</title>
         </head>
         <body>
-            <body>
             <form method="get" action="apicall">
-              <button type="submit">Show interface</button>
+                <label for="ip">IP Address:</label>
+                <input type="text" id="ip" name="ip"><br><br>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username"><br><br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password"><br><br>
+                <label>Select a Command:</label>
+                <select name="command" id="command">
+                    <option value="wg">WG config</option>
+                    <option value="other">Other config</option>
+                </select>
+                <button type="submit" value="Submit">Execute</button>
             </form>
             <br>
-            <div class="select">
-            <label for="language">Select a Command:</label>
-            <select name="command" id="command">
-            <option value="">JavaScript</option>
-            <option value="python">Python</option>
-            <option value="c++">C++</option>
-            <option value="java">Java</option>
-            </select>
-            <button onclick="apicall">Execute</button>
-        </div>
         </body>
+
         <script>
-        function apicall()</script>
+        const selection = document.getElementById('command');
+        const selected = selection.value;
+        console.log('Selected command:', selected);
+        </script>
+
         </html>
         """
+    
     @cherrypy.expose
-    def apicall(self):
-        r = ca.Mapi('192.168.2.214','admin', '1')
+    def apicall(self, ip, username, password, command):
+        r = ca.Mapi(ip, username, password)
         result = r.login()
         return result
     

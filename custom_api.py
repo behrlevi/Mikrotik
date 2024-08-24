@@ -13,6 +13,24 @@ class Mapi:
         interface_list = interfaces.get()
         addr=interface_list[1]['default-name']
         return addr
+    
+    def wg(self):
+        connection = routeros_api.RouterOsApiPool(self.ip, username=self.usr, password=self.passw, plaintext_login=True)
+        api = connection.get_api()
+            
+        interfaces = api.get_resource('/interface')
+        new_interface = interfaces.add({
+            'name': name,
+            'type': 'wireguard',
+            'private-key': private_key,
+            'listen-port': listen_port,
+            'address': address,
+            'mtu': mtu
+        })
+            
+        connection.disconnect()
+        return new_interface
+
 
 r = Mapi('192.168.2.214','admin', '1')
 r.login()
